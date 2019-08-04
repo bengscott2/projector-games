@@ -1,36 +1,23 @@
 const Express = require("express")();
 const Http = require("http").Server(Express);
-const Socketio = require("socket.io")(Http);
+const io = require("socket.io")(Http);
 
-var position = {
-    x: 200,
-    y: 200
-};
-
-Http.listen(3000, () => {
+Http.listen(3000, '192.168.1.89', () => {
     console.log("Listening at :3000...");
 });
 
-Socketio.on("connection", socket => {
-  socket.emit("position", position);
-  socket.on("move", data => {
-    switch(data) {
-      case "left":
-        position.x -= 5;
-        Socketio.emit("position", position);
-        break;
-      case "right":
-        position.x += 5;
-        Socketio.emit("position", position);
-        break;
-      case "up":
-        position.y -= 5;
-        Socketio.emit("position", position);
-        break;
-      case "down":
-        position.y += 5;
-        Socketio.emit("position", position);
-        break;
-    }
-  });
+var clicks = [1,1]
+var users = []
+
+io.on("connection", socket => {
+  var place = users.length
+  console.log(place)
+  users.push(socket.id)
+  console.log('A USER CONNECTED')
+  console.log(users)
+
+  socket.on('click', () => {
+    clicks[place] ++
+    console.log(clicks)
+  })
 });
