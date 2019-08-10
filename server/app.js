@@ -6,18 +6,27 @@ Http.listen(3000, '192.168.1.89', () => {
     console.log("Listening at :3000...");
 });
 
-var clicks = [1,1]
+var points = [1,1]
 var users = []
 
 io.on("connection", socket => {
-  var place = users.length
-  console.log(place)
+  var place = 0
+  if (users.length % 2 === 0) {
+    place = 0
+  } else {
+    place = 1
+  }
+
+
   users.push(socket.id)
   console.log('A USER CONNECTED')
   console.log(users)
 
   socket.on('click', () => {
-    clicks[place] ++
-    console.log(clicks)
+    points[place] ++
+    console.log(points)
+    io.emit('points', {points: points})
   })
+
+
 });
